@@ -46,7 +46,7 @@ pkg_check_modules(GIO REQUIRED IMPORTED_TARGET gio-2.0)
 pkg_check_modules(GIO_UNIX REQUIRED IMPORTED_TARGET gio-unix-2.0)
 pkg_check_modules(PIPEWIRE REQUIRED IMPORTED_TARGET libpipewire-0.3)
 pkg_check_modules(X11 REQUIRED IMPORTED_TARGET x11 xtst)
-pkg_check_modules(TURBOJPEG REQUIRED IMPORTED_TARGET turbojpeg)
+pkg_check_modules(TURBOJPEG REQUIRED IMPORTED_TARGET libturbojpeg)
 pkg_check_modules(EBOOK REQUIRED IMPORTED_TARGET libebook-1.2)
 
 add_executable(${BINARY_NAME}

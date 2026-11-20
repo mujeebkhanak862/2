@@ -3,7 +3,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'dart:convert';
 import '../protocol/api_client.dart';
 import '../protocol/api_key.dart';
-import '../protocol/capability_manifest.dart';
+import '../protocol/capability_manifest.dart' hide RiskLevel;
 import '../theme/app_theme.dart';
 import 'permission_wizard.dart';
 
