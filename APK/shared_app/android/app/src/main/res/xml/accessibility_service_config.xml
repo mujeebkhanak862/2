@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Input capability (Section 6.7) ka Android mechanism: AccessibilityService.
+     User ko Settings > Accessibility mein isko manually enable karna hota
+     hai — yeh bhi ek mandatory OS-level consent step hai (Section 6.6
+     item 2 ka Android-input-equivalent, Screen Capture ke MediaProjection
+     dialog jaisa hi spirit). -->
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accessibilityEventTypes="typeWindowStateChanged"
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:accessibilityFlags="flagDefault"
+    android:canPerformGestures="true"
+    android:canRetrieveWindowContent="true"
+    android:description="@string/accessibility_service_description"
+    android:notificationTimeout="100" />
+<!-- Item 72: pehle typeAllMask + flagRetrieveInteractiveWindows tha — events
+     use hi nahi hote (onAccessibilityEvent khaali hai) isliye privacy/Play
+     policy ke hisaab se sirf zaroori minimum rakha. -->

@@ -1,0 +1,22 @@
+# Copy this file to `local.properties` (same folder) and fill in your
+# own machine's paths — `local.properties` is machine-specific and
+# should NEVER be committed to version control (it's already in
+# .gitignore).
+#
+# sdk.dir      -> your Android SDK install path
+# flutter.sdk  -> your Flutter SDK install path
+#
+# Examples:
+#   macOS:   sdk.dir=/Users/<you>/Library/Android/sdk
+#            flutter.sdk=/Users/<you>/flutter
+#   Linux:   sdk.dir=/home/<you>/Android/Sdk
+#            flutter.sdk=/home/<you>/flutter
+#   Windows: sdk.dir=C\:\\Users\\<you>\\AppData\\Local\\Android\\Sdk
+#            flutter.sdk=C\:\\src\\flutter
+#
+# Agar aapne pehle kabhi `flutter create` ya `flutter run` chalaya hai
+# kisi bhi project mein, yeh file usually already aapke machine par kahin
+# maujood hogi (copy kar sakte hain) — warna yeh do lines khud bana lein.
+
+sdk.dir=/path/to/your/android/sdk
+flutter.sdk=/path/to/your/flutter/sdk

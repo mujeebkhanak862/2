@@ -1,0 +1,10 @@
+ORGANIZED PROJECT FOLDER INDEX
+
+Backend/  - labeled copy of control_api backend source
+Website/  - labeled copy of web_dashboard website source
+APK/shared_app/ - independent app-source copy for Android APK builds
+EXE/shared_app/ - independent app-source copy for Windows EXE builds; installers/windows/ included
+OS/shared_app/  - independent app-source copy for Linux builds; scripts/package_linux_deb.sh included
+shared_app/, control_api/, web_dashboard/, .github/, scripts/, installers/, and project docs are retained from the original project so the original repository layout is preserved.
+
+Note: APK, EXE, and OS folders contain build source and helper files, not already-compiled APK/EXE/DEB binaries.

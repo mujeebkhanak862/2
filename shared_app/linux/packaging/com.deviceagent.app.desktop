@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Universal Device Agent
+Comment=Apne devices ko remotely automate/manage karne ke liye personal agent
+Exec=device_agent
+Icon=com.deviceagent.app
+Terminal=false
+Categories=Utility;
+StartupWMClass=device_agent

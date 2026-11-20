@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.deviceagent.app">
+
+    <!-- Base — pairing ke liye sirf internet chahiye. Har naya capability
+         (screen, input, files, location...) apni permission yahan add
+         karega jab woh capability implement hogi. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- Screen Capture (Section 6.6, checklist item 1) — Android 14+ mein
+         explicit foreground-service-type permission zaroori hai, warna
+         MediaProjection start hote hi crash hota hai. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
+    <!-- System-audio streaming (AudioPlaybackCaptureConfiguration) ke liye zaroori — mic access nahi hota. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Item 85: agent ko background mein zinda rakhne wali service. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- Reboot ke baad agent mode wapas (BootReceiver). -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+
+    <!-- Location & Network (Section 11) — runtime-requested (dangerous
+         permission), UI mein explicit consent maanga jaata hai. Wi-Fi SSID
+         padhne ke liye bhi (ironically) location permission chahiye hoti
+         hai Android ka apna privacy design ki wajah se. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <!-- Contacts (naya, read-only capability) -->
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
+    <!-- Item 64: Android 11+ package visibility. Bina iske
+         getInstalledApplications/queryIntentActivities adhoori list deti hai
+         aur getLaunchIntentForPackage null deta hai. Hum sirf *launchable*
+         apps dhoondte hain (LAUNCHER intent) — QUERY_ALL_PACKAGES nahi
+         (Play policy). -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+    </queries>
+
+    <application
+        android:label="Universal Device Agent"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:theme="@style/LaunchTheme"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize">
+            <meta-data
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+
+        <!-- Screen Capture: MediaProjection session isi foreground service
+             ke andar chalti hai. foregroundServiceType zaroori hai warna
+             Android 14+ par capture crash hoti hai (Section 6.6). -->
+        <service
+            android:name=".ScreenCaptureService"
+            android:foregroundServiceType="mediaProjection"
+            android:exported="false" />
+
+        <!-- Input capability: tap/swipe/type sab AccessibilityService ke
+             through hote hain. User ko Settings > Accessibility mein
+             manually enable karna hota hai — koi programmatic bypass
+             nahi hai (Android ka hi security model). -->
+        <service
+            android:name=".InputAccessibilityService"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_service_config" />
+        </service>
+    
+        <!-- Item 84: notification listener (user ko Settings mein khud enable karna padta hai). -->
+        <service
+            android:name=".DeviceNotificationListener"
+            android:exported="true"
+            android:label="Device Agent notifications"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
+        <!-- Item 85: persistent agent foreground service. -->
+        <service
+            android:name=".AgentForegroundService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Persistent remote-device-agent connection to the user's own control server" />
+        </service>
+        <receiver
+            android:name=".BootReceiver"
+            android:exported="true"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accessibility_service_description">
+        Universal Device Agent ko is device par tap, swipe, aur typing
+        actions perform karne ki ijazat deta hai — sirf tab jab aap khud
+        koi task authorize karein (Scoped API Key ke through).
+    </string>
+</resources>

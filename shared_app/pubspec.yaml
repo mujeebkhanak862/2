@@ -1,0 +1,32 @@
+name: shared_app
+description: >
+  Universal Device Agent — shared Flutter/Dart layer.
+  Runs on Android, Windows, and Linux/ChromeOS from a single codebase.
+  Native, OS-specific capability modules live outside this package
+  (android_native/, windows_native/, linux_native/) and talk to this
+  layer through Platform Channels.
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.6.0 <4.0.0"
+  flutter: ">=3.27.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  web_socket_channel: ^2.4.0   # protocol/websocket_client.dart — live events, screen frames
+  http: ^1.2.0                 # protocol/api_client.dart — REST calls to Control API
+  uuid: ^4.3.0                 # request_id / key_id generation
+  qr_flutter: ^4.1.0           # key_manager_screen.dart — naye API key ka QR code dikhana
+  flutter_secure_storage: ^9.2.2  # config/credential_store.dart — device token ko restart ke baad bhi safe rakhna
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/brand/logo.png

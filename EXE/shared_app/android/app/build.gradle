@@ -1,0 +1,123 @@
+// android/app/build.gradle
+import java.util.Properties
+
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    // Flutter Gradle Plugin — flutter-plugin-loader ke baad aana zaroori
+    // hai settings.gradle mein.
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+// Audit fix (Section 4 "Release signing" / Section 13 #7): pehle
+// `buildTypes.release.signingConfig` hardcoded `signingConfigs.debug`
+// tha — koi bhi "release" APK asal mein debug key se sign hota, jo Play
+// Store par upload hi nahi ho sakta aur security-wise bhi galat hai
+// (debug keys publicly known/shared hote hain, update-signature
+// continuity guarantee nahi deti).
+//
+// Ab: agar `android/key.properties` maujood hai (aapka apna, kabhi
+// commit na hone wala real keystore — dekhein `key.properties.example`
+// aur naye root `.gitignore`), to real release signing use hoti hai.
+// Agar nahi hai, to build fail nahi hoti (taaki `flutter run --release`
+// bina keystore banaye bhi turant kaam kare) — lekin ek LOUD warning
+// print hoti hai, chup-chap debug-signed release banane ki bajaye.
+def keystorePropertiesFile = rootProject.file("app/key.properties")
+def keystoreProperties = new Properties()
+def hasReleaseKeystore = keystorePropertiesFile.exists()
+if (hasReleaseKeystore) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+// Item 88: CI/release pipeline mein `-PrequireReleaseKeystore=true` (ya env
+// REQUIRE_RELEASE_KEYSTORE=true) do — tab keystore na ho to build **fail**
+// hogi (debug-signed release kabhi publish na ho). Local `flutter run
+// --release` ke liye default behaviour (sirf loud warning) same hai.
+def requireKeystore = (project.findProperty("requireReleaseKeystore") == "true") ||
+        (System.getenv("REQUIRE_RELEASE_KEYSTORE") == "true")
+if (!hasReleaseKeystore && requireKeystore) {
+    throw new GradleException(
+        "Release build ke liye android/app/key.properties zaroori hai " +
+        "(requireReleaseKeystore=true set hai). key.properties.example dekhein.")
+}
+
+if (!hasReleaseKeystore) {
+    println ""
+    println "=================================================================="
+    println "  WARNING: android/app/key.properties nahi mila."
+    println "  Release build DEBUG keystore se sign ho rahi hai — yeh Play"
+    println "  Store par upload NAHI ho sakti aur production ke liye safe nahi"
+    println "  hai. Real keystore banane ke liye HOW_TO_CONNECT.md (ya"
+    println "  key.properties.example) dekhein, phir:"
+    println "    keytool -genkey -v -keystore <path>/release.jks \\"
+    println "      -keyalg RSA -keysize 2048 -validity 10000 -alias upload"
+    println "=================================================================="
+    println ""
+}
+
+android {
+    namespace "com.deviceagent.app"
+    compileSdk = flutter.compileSdkVersion
+    ndkVersion = flutter.ndkVersion
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    defaultConfig {
+        applicationId "com.deviceagent.app"
+        // minSdk 26 (Android 8.0) — foreground service + accessibility
+        // gesture APIs sabhi is version se reliably available hain.
+        // (Section 6.6 ke screen/input/background capabilities isi
+        // se neeche properly test nahi ho sakte.)
+        minSdk = 26
+        targetSdk = flutter.targetSdkVersion
+        // Pehle hardcoded 1 / "0.1.0" tha: har release ka versionCode 1 hota =>
+        // installed app update nahi hoti aur Play Store upload reject. Ab pubspec
+        // `version: x.y.z+N` (ya `flutter build --build-name/--build-number`) se.
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
+    }
+
+    signingConfigs {
+        if (hasReleaseKeystore) {
+            release {
+                storeFile rootProject.file("app/" + keystoreProperties["storeFile"])
+                storePassword keystoreProperties["storePassword"]
+                keyAlias keystoreProperties["keyAlias"]
+                keyPassword keystoreProperties["keyPassword"]
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig = hasReleaseKeystore ? signingConfigs.release : signingConfigs.debug
+            // Real release build ke liye shrink/obfuscate bhi on karte
+            // hain — pehle yeh explicitly off/unset tha.
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+        }
+    }
+}
+
+// kotlinOptions{} Kotlin 2.x mein deprecated/removed hai — compilerOptions use karo.
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+    }
+}
+
+flutter {
+    source "../.."
+}
+
+dependencies {
+    // FilesHandler.kt (SAF folder-picker ke liye DocumentFile API) —
+    // README mein pehle hi note kiya gaya tha ke yeh dependency chahiye
+    // hogi.
+    implementation "androidx.documentfile:documentfile:1.0.1"
+    implementation "androidx.core:core-ktx:1.13.1"
+}

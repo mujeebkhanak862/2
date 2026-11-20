@@ -1,0 +1,24 @@
+# Audit fix (Section 4 "Release signing" / Section 13 #7)
+#
+# Yeh file sirf ek TEMPLATE hai (real secrets nahi) — isliye committed
+# hai. Real signing ke liye:
+#
+#   1. Apna keystore banao (ek hi baar, phir hamesha ke liye safe jagah
+#      rakho — kho gaya to app future updates ke liye kabhi upload nahi
+#      ho paayegi, Play Store naya app hi samjhega):
+#
+#        keytool -genkey -v -keystore release.jks \
+#          -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+#
+#   2. Is file ko copy karo `android/app/key.properties` naam se (bina
+#      `.example` ke) — woh naam is repo ke root `.gitignore` mein
+#      already excluded hai, kabhi commit nahi hoga.
+#
+#   3. Neeche ke 4 values apni real details se bharo. `storeFile` yahan
+#      `android/app/` ke RELATIVE path hai (ya absolute path bhi chal
+#      jaayega).
+#
+# storeFile=release.jks
+# storePassword=CHANGE_ME
+# keyAlias=upload
+# keyPassword=CHANGE_ME

@@ -1,0 +1,24 @@
+# Secrets / signing — kabhi commit nahi
+**/key.properties
+*.jks
+*.keystore
+*.p12
+*.pfx
+.env
+.env.*
+!*.example
+
+# Build / tooling
+build/
+.dart_tool/
+.packages
+.flutter-plugins
+.flutter-plugins-dependencies
+**/android/local.properties
+**/android/.gradle/
+**/android/gradle/wrapper/gradle-wrapper.jar
+dist/
+installers/windows/Output/
+shared_app/android/app/release.jks
+control_api/.data/
+installers/windows/vc_redist.x64.exe
