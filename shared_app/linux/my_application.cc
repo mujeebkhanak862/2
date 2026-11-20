@@ -16,6 +16,7 @@
 #include "screen_capture_manager.h"
 
 #include <flutter_linux/flutter_linux.h>
+#include "flutter/generated_plugin_registrant.h"
 #include <gtk/gtk.h>
 
 struct _MyApplication {

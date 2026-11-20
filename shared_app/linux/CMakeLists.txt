@@ -91,6 +91,8 @@ target_link_libraries(${BINARY_NAME} PRIVATE PkgConfig::EBOOK)
 
 add_dependencies(${BINARY_NAME} flutter_assemble)
 
+include(flutter/generated_plugins.cmake)
+
 # --- Installation (bundling) -------------------------------------------
 set(BUILD_BUNDLE_DIR "${PROJECT_BINARY_DIR}/bundle")
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)

@@ -18,6 +18,9 @@ endif()
 
 set(CMAKE_POLICY_DEFAULT_CMP0063 NEW)
 
+# Use Unicode for all projects (plugins TCHAR use karte hain).
+add_definitions(-DUNICODE -D_UNICODE)
+
 option(DEVICE_AGENT_WERROR "Treat compiler warnings as errors" OFF)
 
 function(APPLY_STANDARD_SETTINGS TARGET)
