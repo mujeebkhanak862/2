@@ -93,6 +93,10 @@ add_dependencies(${BINARY_NAME} flutter_assemble)
 
 # --- Installation (bundling) -------------------------------------------
 set(BUILD_BUNDLE_DIR "${PROJECT_BINARY_DIR}/bundle")
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+  set(CMAKE_INSTALL_PREFIX "${BUILD_BUNDLE_DIR}" CACHE PATH "Install prefix" FORCE)
+endif()
+set(INSTALL_BUNDLE_DIR "${CMAKE_INSTALL_PREFIX}")
 set(INSTALL_BUNDLE_DATA_DIR "${INSTALL_BUNDLE_DIR}/data")
 set(INSTALL_BUNDLE_LIB_DIR "${INSTALL_BUNDLE_DIR}/lib")
 

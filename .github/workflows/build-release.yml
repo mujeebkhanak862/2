@@ -31,6 +31,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
+          flutter-version: '3.35.x'
           cache: true
 
       - name: Android platform files generate karo
@@ -94,6 +95,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
+          flutter-version: '3.35.x'
           cache: true
 
       - name: Windows managed files generate karo
@@ -157,6 +159,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
+          flutter-version: '3.35.x'
           cache: true
 
       - name: Linux managed files generate karo
